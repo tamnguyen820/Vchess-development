@@ -1,21 +1,16 @@
 <template>
   <div class="dropdown">
-    <!-- <select
-      :disabled="disable"
-      v-model="selectedValue"
-      @mousedown="noOutline($event)"
-      @blur="removeNoOutline($event)"
-    > -->
     <select
       :disabled="disable"
-      @mousedown="noOutline($event)"
-      @blur="removeNoOutline($event)"
+      @mousedown="noOutline"
+      @blur="removeNoOutline"
+      :value="selectedValue"
+      @change="change"
     >
       <option
         v-for="op in options"
         :key="op.value"
         :value="op.value"
-        :selected="op.value === selectedValue"
       >
         {{ op.name || op.value }}
       </option>
@@ -44,11 +39,6 @@ export default {
       required: true,
     },
   },
-  watch: {
-    selectedValue(newValue) {
-      this.$emit("change-dropdown-" + this.id, newValue);
-    },
-  },
   methods: {
     noOutline(e) {
       const select = e.target;
@@ -59,6 +49,9 @@ export default {
     removeNoOutline(e) {
       const select = e.target;
       select.classList.remove("no-outline");
+    },
+    change(e) {
+      this.$emit("update:" + this.id, e.target.value);
     },
   },
 };

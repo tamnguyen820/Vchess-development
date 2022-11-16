@@ -18,7 +18,7 @@
             :disable="!engineOn"
             :options="styleOptions"
             :selectedValue="styleVal"
-            @change-dropdown-style="changeStyle"
+            @update:style="changeStyle"
           />
           <!-- <div style="width: 60%">
             <Slider :disable="!engineOn" :range="styleRange" />
@@ -31,7 +31,7 @@
             :disable="!engineOn"
             :options="depthOptions"
             :selectedValue="depthVal"
-            @change-dropdown-depth="changeDepth"
+            @update:depth="changeDepth"
           />
         </div>
         <div class="content-line" :class="{ 'disable-line': !engineOn }">
@@ -41,7 +41,7 @@
             :disable="!engineOn"
             :options="lineOptions"
             :selectedValue="pvVal"
-            @change-dropdown-lines="changeLines"
+            @update:lines="changeLines"
           />
         </div>
         <div class="content-line" :class="{ 'disable-line': !engineOn }">
@@ -78,11 +78,11 @@ export default {
         { name: "Very aggressive", value: 100 },
       ],
       depthOptions: [
-        { value: 14 },
         { value: 16 },
-        { name: "18 (default)", value: 18 },
-        { value: 20 },
+        { value: 18 },
+        { name: "20 (default)", value: 20 },
         { value: 22 },
+        { value: 24 },
       ],
       lineOptions: [
         { name: "1 (default)", value: 1 },

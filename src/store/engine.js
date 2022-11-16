@@ -5,7 +5,7 @@ export const engine = {
   state() {
     return {
       worker: null,
-      engineDepth: 18,
+      engineDepth: 20,
       multipv: 1,
       depth: "0",
       evalType: "cp",

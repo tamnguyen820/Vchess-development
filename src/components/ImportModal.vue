@@ -9,7 +9,7 @@
             id="import-option"
             :options="importOptions"
             :selectedValue="currentOption"
-            @change-dropdown-import-option="changeImportOption"
+            @update:import-option="changeImportOption"
           />
         </div>
         <textarea
