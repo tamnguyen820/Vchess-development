@@ -1,0 +1,8 @@
+Urgent:
+- Rework Dropdown: v-model problem
+- Rework Modal using teleport
+
+
+Long time:
+- Arrows
+- Engine suggestion speed & display
