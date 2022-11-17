@@ -1,35 +1,27 @@
 <template>
-  <div v-if="!close" class="modal-container" :id="`modal-container-${id}`">
-    <div
-      class="modal-background"
-      :id="`modal-background-${id}`"
-      @click="closeModal()"
-    ></div>
-    <div
-      class="modal"
-      :id="`modal-${id}`"
-      tabindex="0"
-      @keyup="handleKeyUpModal"
-    >
-      <div class="modal-top">
-        <div role="heading" class="modal-heading">
-          <slot name="modalHeading"> Modal heading </slot>
+  <teleport to="#modal-wrap">
+    <div v-if="!close" class="modal-container" :id="`modal-container-${id}`">
+      <div
+        class="modal-background"
+        role="button"
+        :id="`modal-background-${id}`"
+        @click="closeModal()"
+      ></div>
+      <div class="modal" :id="`modal-${id}`" tabindex="0" @keyup="handleKeyUpModal">
+        <div class="modal-top">
+          <div role="heading" class="modal-heading">
+            <slot name="modalHeading"></slot>
+          </div>
+          <button class="close-button" @click="closeModal()">
+            <img src="../../assets/images/icon/close-icon-round.svg" />
+          </button>
         </div>
-        <button class="close-button" @click="closeModal()">
-          <img src="../../assets/images/icon/close-icon-round.svg" />
-        </button>
-      </div>
-      <div role="content" class="modal-content">
-        <slot name="modalContent">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Alias
-          accusantium temporibus blanditiis delectus, in quae earum, explicabo
-          eius necessitatibus ipsam dolorum deleniti assumenda eum perspiciatis
-          maiores error doloribus laboriosam. Quia praesentium ea iure quo
-          molestiae voluptatum esse, ut exercitationem nisi!
-        </slot>
+        <div role="content" class="modal-content">
+          <slot name="modalContent"></slot>
+        </div>
       </div>
     </div>
-  </div>
+  </teleport>
 </template>
 
 <script>
@@ -49,9 +41,7 @@ export default {
   },
   methods: {
     closeModal() {
-      const modalContainer = document.getElementById(
-        "modal-container-" + this.id
-      );
+      const modalContainer = document.getElementById("modal-container-" + this.id);
       modalContainer.style.animation = "modalOut 0.3s forwards";
       const modalClose = () => {
         this.close = true;
@@ -68,9 +58,7 @@ export default {
     openModal() {
       this.close = false;
       this.$nextTick(() => {
-        const modalContainer = document.getElementById(
-          "modal-container-" + this.id
-        );
+        const modalContainer = document.getElementById("modal-container-" + this.id);
         modalContainer.style.animation = "modalIn 0.3s forwards";
       });
     },

@@ -1,6 +1,6 @@
-Urgent:
-- Rework Dropdown: v-model problem
-- Rework Modal using teleport
+Current:
+- Rework navbar on big screen
+- Log out
 
 
 Long time:
