@@ -1,5 +1,5 @@
 Current:
-- Rework navbar on big screen
+- Rework navbar on big screen. Take up space, use clickOutside component
 - Log out
 
 

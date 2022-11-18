@@ -1,71 +1,69 @@
 <template>
-  <teleport to="#modal-wrap">
-    <div v-if="!close" class="modal-container" :id="`modal-container-${id}`">
-      <div
-        class="modal-background"
-        role="button"
-        :id="`modal-background-${id}`"
-        @click="closeModal()"
-      ></div>
-      <div class="modal" :id="`modal-${id}`" tabindex="0" @keyup="handleKeyUpModal">
-        <div class="modal-top">
-          <div role="heading" class="modal-heading">
-            <slot name="modalHeading"></slot>
+  <Teleport to="#modal-wrap">
+    <Transition name="modal">
+      <div v-if="open" class="modal-bg">
+        <OnClickOutside
+          @trigger="$emit('close')"
+          class="modal"
+          :id="`modal-${id}`"
+          tabindex="0"
+          @keyup="handleKeyUpModal"
+        >
+          <div class="modal-top">
+            <div role="heading" class="modal-heading">
+              <slot name="modalHeading"></slot>
+            </div>
+            <button class="close-button" @click="$emit('close')">
+              <img src="../../assets/images/icon/close-icon-round.svg" />
+            </button>
           </div>
-          <button class="close-button" @click="closeModal()">
-            <img src="../../assets/images/icon/close-icon-round.svg" />
-          </button>
-        </div>
-        <div role="content" class="modal-content">
-          <slot name="modalContent"></slot>
-        </div>
+          <div role="content" class="modal-content">
+            <slot name="modalContent"></slot>
+          </div>
+        </OnClickOutside>
       </div>
-    </div>
-  </teleport>
+    </Transition>
+  </Teleport>
 </template>
 
 <script>
 import { uniqueId } from "lodash";
+import { OnClickOutside } from "@vueuse/components";
 
 export default {
-  data() {
-    return {
-      close: true,
-    };
+  emits: ["close"],
+  components: {
+    OnClickOutside,
   },
   props: {
     id: {
       type: String,
       default: () => uniqueId(),
     },
+    open: {
+      type: Boolean,
+      required: true,
+    },
   },
-  methods: {
-    closeModal() {
-      const modalContainer = document.getElementById("modal-container-" + this.id);
-      modalContainer.style.animation = "modalOut 0.3s forwards";
-      const modalClose = () => {
-        this.close = true;
-        modalContainer.removeEventListener("animationend", modalClose);
-
-        // Z-index stacking works weird
+  watch: {
+    open(isOpen) {
+      if (isOpen) {
+        // Focus on modal for tabbing
+        this.$nextTick(() => {
+          document.getElementById(`modal-${this.id}`).focus();
+        });
+      } else {
+        // Z-index stacking works weird for nav
         const controlButton = document.getElementById("navigation-control");
         controlButton.style.zIndex = 1001;
-
-        this.$emit("closed-modal-" + this.id);
-      };
-      modalContainer.addEventListener("animationend", modalClose);
+      }
     },
-    openModal() {
-      this.close = false;
-      this.$nextTick(() => {
-        const modalContainer = document.getElementById("modal-container-" + this.id);
-        modalContainer.style.animation = "modalIn 0.3s forwards";
-      });
-    },
+  },
+  methods: {
     handleKeyUpModal(e) {
       const code = e.keyCode;
       if (code === 27) {
-        this.closeModal();
+        this.$emit("close");
       }
     },
   },
@@ -73,7 +71,7 @@ export default {
 </script>
 
 <style lang="scss">
-.modal-container {
+.modal-bg {
   padding: 0;
   margin: 0;
   top: 0;
@@ -85,22 +83,16 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 5000;
-  opacity: 1;
-  .modal-background {
-    height: 100vh;
-    width: 100vw;
-    position: fixed;
-    background: rgba(0, 0, 0, 0.4);
-  }
+  background: rgba(0, 0, 0, 0.5);
   .modal {
     background: white;
-    position: fixed;
     border-radius: 5px;
     width: max-content;
     min-width: 30%;
     max-width: 60%;
     position: relative;
     overflow: hidden;
+    box-shadow: 0px 5px 5px 2px rgba(0, 0, 0, 0.1);
     .close-button {
       border: 0;
       background: none;
@@ -136,25 +128,19 @@ export default {
   }
 }
 
-@keyframes modalIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+.modal-enter-active,
+.modal-leave-active {
+  transition: var(--tran-03);
 }
-@keyframes modalOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+  transform: scale(1.05);
 }
 
 @media (max-width: 50rem) {
-  .modal-container {
+  .modal-bg {
     .modal {
       min-width: 60%;
       max-width: 80%;

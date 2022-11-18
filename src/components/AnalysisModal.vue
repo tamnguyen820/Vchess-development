@@ -1,5 +1,5 @@
 <template>
-  <Modal id="analysis" @closed-modal-analysis="setModalClose" ref="modal">
+  <Modal id="analysis" :open="open">
     <template v-slot:modalHeading>Analysis settings</template>
     <template v-slot:modalContent>
       <div class="analysis-content">
@@ -68,6 +68,12 @@ import Dropdown from "./common/Dropdown.vue";
 
 export default {
   components: { Modal, Toggle, Slider, Dropdown },
+  props: {
+    open: {
+      type: Boolean,
+      required: true,
+    }
+  },
   data() {
     return {
       styleOptions: [
@@ -93,7 +99,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getAnalysisModalOpen: "analysisSettings/getAnalysisModalOpen",
       engineOn: "analysisSettings/getEngineOn",
       styleVal: "engine/getEngineContempt",
       depthVal: "engine/getEngineDepth",
@@ -104,21 +109,11 @@ export default {
   methods: {
     ...mapMutations({
       setEngineOn: "analysisSettings/setEngineOn",
-      setAnalysisModalOpen: "analysisSettings/setAnalysisModalOpen",
       setEngineContempt: "engine/setEngineContempt",
       setEngineDepth: "engine/setEngineDepth",
       setMultiPv: "engine/setMultiPv",
       setSuggestionsOn: "analysisSettings/setSuggestionsOn",
     }),
-    openModal() {
-      this.$refs.modal.openModal();
-      this.$nextTick(() => {
-        document.getElementById("modal-analysis").focus();
-      });
-    },
-    setModalClose() {
-      this.setAnalysisModalOpen(false);
-    },
     changeEngine(val) {
       if (!val) {
         this.changeSuggestions(val);
@@ -136,13 +131,6 @@ export default {
     },
     changeSuggestions(val) {
       this.setSuggestionsOn(val);
-    },
-  },
-  watch: {
-    getAnalysisModalOpen(open) {
-      if (open) {
-        this.openModal();
-      }
     },
   },
 };

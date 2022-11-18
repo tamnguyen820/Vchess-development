@@ -1,5 +1,5 @@
 <template>
-  <Modal id="import" @closed-modal-import="setModalClose" ref="modal">
+  <Modal id="import" :open="open">
     <template v-slot:modalHeading>Import</template>
     <template v-slot:modalContent>
       <div class="import-content">
@@ -38,6 +38,12 @@ import Modal from "./common/Modal.vue";
 import Dropdown from "./common/Dropdown.vue";
 
 export default {
+  props: {
+    open: {
+      type: Boolean,
+      required: true,
+    }
+  },
   data() {
     return {
       importOptions: [
@@ -51,27 +57,15 @@ export default {
   components: { Modal, Dropdown },
   computed: {
     ...mapGetters({
-      getImportModalOpen: "analysisSettings/getImportModalOpen",
       pgnLoaded: "game/getPGNLoaded",
       fenLoaded: "game/getFENLoaded",
     }),
   },
   methods: {
     ...mapMutations({
-      setImportModalOpen: "analysisSettings/setImportModalOpen",
       loadPGN: "game/loadPGN",
       loadFEN: "game/loadFEN",
     }),
-    openModal() {
-      this.$refs.modal.openModal();
-      this.$nextTick(() => {
-        document.getElementById("modal-import").focus();
-      });
-    },
-    setModalClose() {
-      this.setImportModalOpen(false);
-    },
-
     changeImportOption(val) {
       this.currentOption = val;
     },
@@ -87,7 +81,7 @@ export default {
         }
 
         if (success) {
-          this.$refs.modal.closeModal();
+          this.$emit('close');
         } else {
           alert("Import failed!");
         }
@@ -106,13 +100,6 @@ export default {
     removeNoOutline(e) {
       const select = e.target;
       select.classList.remove("no-outline");
-    },
-  },
-  watch: {
-    getImportModalOpen(open) {
-      if (open) {
-        this.openModal();
-      }
     },
   },
 };

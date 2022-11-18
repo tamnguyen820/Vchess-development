@@ -5,19 +5,23 @@
         <button
           v-if="analysisMode"
           class="setting-bar"
-          @click="setAnalysisModalOpen(true)"
+          @click="analysisModalOpen = true"
+          title="Open engine settings"
         >
           <img src="/src/assets/images/icon/setting-bar.svg" />
         </button>
+        <AnalysisModal :open="analysisModalOpen" @close="analysisModalOpen = false"/>
         <button
           v-if="analysisMode"
           class="import"
-          @click="setImportModalOpen(true)"
+          @click="importModalOpen = true"
+          title="Import game or position"
         >
           <img src="/src/assets/images/icon/upload.svg" />
         </button>
+        <ImportModal :open="importModalOpen" @close="importModalOpen = false"/>
       </div>
-      <button class="flip-board" @click="setFlipBoard">
+      <button class="flip-board" @click="setFlipBoard" title="Flip board">
         <img class="flip-icon" src="/src/assets/images/icon/flip2.svg" />
       </button>
       <div class="player-area" :class="{ 'flipped-col': flipBoard }">
@@ -104,8 +108,14 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
+import AnalysisModal from "../components/AnalysisModal.vue";
+import ImportModal from "../components/ImportModal.vue";
 
 export default {
+  components: {
+    AnalysisModal,
+    ImportModal,
+  },
   created() {
     this.setHighlight(this.lastMoveIndex);
   },
@@ -118,6 +128,8 @@ export default {
   data() {
     return {
       highlight: { turn: 1, index: -1 },
+      analysisModalOpen: false,
+      importModalOpen: false,
       // players: [
       //   { name: "Random noob", side: "b" },
       //   { name: "Gotham sub", side: "w" },
@@ -184,9 +196,6 @@ export default {
       playGame: "game/playGame",
       goBack: "game/goBack",
       goForward: "game/goForward",
-
-      setAnalysisModalOpen: "analysisSettings/setAnalysisModalOpen",
-      setImportModalOpen: "analysisSettings/setImportModalOpen",
     }),
     reviewMove(turn, move) {
       const current = this.highlight;
