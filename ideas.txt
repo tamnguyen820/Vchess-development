@@ -1,8 +1,8 @@
 Current:
-- Rework navbar on big screen. Take up space, use clickOutside component
-- Log out
+- Firebase authorization
 
 
 Long time:
 - Arrows
 - Engine suggestion speed & display
+- Rework navbar on big screen. Take up space, use clickOutside component
